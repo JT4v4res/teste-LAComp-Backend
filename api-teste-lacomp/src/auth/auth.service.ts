@@ -51,13 +51,15 @@ export class AuthService {
 // Classe responsavel por verificar as permissões do usuário logado
 @Injectable()
 export class RolesAuthGuard extends AuthGuard('jwt') {
-    constructor(private readonly role: string) {
+    constructor(private readonly role: string[]) {
         super()
     }
 
     canActivate(context: ExecutionContext) {
         const user = context.switchToHttp().getRequest().user;
 
-        return user && user.role === this.role;
+        const isInRole = this.role.some(r => r === user.role);
+
+        return user && isInRole;
     }
 }
